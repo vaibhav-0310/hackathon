@@ -1,32 +1,68 @@
 import express from "express";
 import axios from "axios";
 import {parseStringPromise} from "xml2js";
+import "dotenv/config";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import cors from "cors";
 
 const app = express();
 
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.get("/data", async (req, res) => {
   try {
-    const response = await axios.get("https://huggingface.co/api/models?limit=1");
-    if (!response || !response.data || response.data.length === 0) {
+    const hfResponse = await axios.get("https://huggingface.co/api/models?limit=10");
+
+    if (!hfResponse || !hfResponse.data || hfResponse.data.length === 0) {
       return res.status(400).json({ message: "No model data found" });
     }
-    const modelId = response.data[0].modelId;
-    const readmeUrl = `https://huggingface.co/${modelId}/raw/main/README.md`;
-    const readmeResponse = await axios.get(readmeUrl);
-    const descriptionMarkdown = readmeResponse.data;
-    return res.status(200).json({
-      modelId,
-      link: `https://huggingface.co/${modelId}`,
-      description: descriptionMarkdown.slice(0, 2000) + "...", 
-    });
+
+    const models = hfResponse.data;
+
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+
+    const modelData = await Promise.all(
+      models.map(async (modelInfo) => {
+        const modelId = modelInfo.modelId;
+        const readmeUrl = `https://huggingface.co/${modelId}/raw/main/README.md`;
+
+        try {
+          const readmeResponse = await axios.get(readmeUrl);
+          const readmeContent = readmeResponse.data;
+
+          // Send README content to Gemini
+          const response = await model.generateContent({
+            contents: [{ parts: [{ text: readmeContent }] }],
+          });
+
+          const generatedDescription =
+            response.response?.candidates?.[0]?.content?.parts?.[0]?.text || "No description generated.";
+
+          return {
+            modelId,
+            link: `https://huggingface.co/${modelId}`,
+            description: generatedDescription,
+          };
+        } catch (err) {
+          return {
+            modelId,
+            link: `https://huggingface.co/${modelId}`,
+            description: "README not available or Gemini generation failed.",
+          };
+        }
+      })
+    );
+
+    return res.status(200).json(modelData);
   } catch (e) {
-    console.error(e);
-    return res.status(400).json({ error: e.message });
+    console.error("Server Error:", e.message);
+    return res.status(500).json({ error: e.message });
   }
 });
+
 
 app.get("/arxiv", async (req, res) => {
   try {
@@ -47,14 +83,13 @@ app.get("/arxiv", async (req, res) => {
       summary: paper.summary.trim().replace(/\s+/g, " ").slice(0, 300) + "...",
       pdfLink: paper.link.find((l) => l.$.title === "pdf").$.href,
     }));
-
-    // ⬇ Return just the array instead of { papers: [...] }
     return res.status(200).json(papers);
   } catch (err) {
     console.error(err);
     return res.status(500).json({ error: "Failed to fetch or parse arXiv data" });
   }
 });
+
 
 app.listen(8080, () => {
   console.log("Server started at http://localhost:8080");

@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-function LoginPage() {
-  const [formData, setFormData] = useState({ username: "", password: "",email:"" });
+function SignupPage() {
+  const [formData, setFormData] = useState({ username: "", password: "", email: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
@@ -18,10 +18,11 @@ function LoginPage() {
     setError(null);
     try {
       const response = await axios.post("http://localhost:8080/api/signup", formData);
+
       console.log("Login Success:", response.data);
       navigate('/dashboard');
     } catch (err) {
-      setError("Login failed. Please try again.");
+      setError("Login failed. Please check your credentials.");
       console.error("Login Error:", err);
     } finally {
       setIsSubmitting(false);
@@ -39,10 +40,10 @@ function LoginPage() {
           <div>
             <input
               name="username"
-              type="username"
+              type="text"
               value={formData.username}
               onChange={handleChange}
-              placeholder="username"
+              placeholder="Username"
               className="w-full px-3 py-2.5 border rounded-md dark:bg-gray-700"
               required
             />
@@ -53,7 +54,7 @@ function LoginPage() {
               type="email"
               value={formData.email}
               onChange={handleChange}
-              placeholder="email"
+              placeholder="Email"
               className="w-full px-3 py-2.5 border rounded-md dark:bg-gray-700"
               required
             />
@@ -74,7 +75,7 @@ function LoginPage() {
             disabled={isSubmitting}
             className="w-full py-2.5 bg-purple-600 hover:bg-purple-700 text-white rounded-md"
           >
-            {isSubmitting ? 'Sign in..' : 'Sign Up'}
+            {isSubmitting ? 'Logging In...' : 'Log In'}
           </button>
         </form>
 
@@ -82,12 +83,30 @@ function LoginPage() {
           <div className="absolute inset-0 flex items-center" aria-hidden="true">
             <div className="w-full border-t border-gray-300 dark:border-gray-600"></div>
           </div>
-          
+          <div className="relative flex justify-center">
+            <span className="px-2 bg-white dark:bg-gray-800 text-sm text-gray-500 dark:text-gray-400">Or continue with</span>
+          </div>
         </div>
 
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <button
+            onClick={() => window.open("http://localhost:8080/auth/google", "_self")}
+            className="w-full py-2 px-4 border rounded-md bg-white dark:bg-gray-700"
+          >
+            Google
+          </button>
+          <button
+            onClick={() => window.open("http://localhost:8080/auth/github", "_self")}
+            className="w-full py-2 px-4 border rounded-md bg-white dark:bg-gray-700"
+          >
+            GitHub
+          </button>
+        </div>
+
+      
       </div>
     </div>
   );
 }
 
-export default LoginPage;
+export default SignupPage;

@@ -38,7 +38,7 @@ function App() {
 
                 {/* Protected Dashboard Route */}
                 <Route
-                    path="/dashboard"
+                    path="/dashboard/:id"
                     element={
     
                             <DashboardComponent

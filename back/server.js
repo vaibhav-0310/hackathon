@@ -10,6 +10,7 @@ import passport from "passport";
 import {Strategy} from "passport-local";
 import User from "./models/usermodel.js";
 import UserRoutes from "./routes/user.routes.js";
+import MailRoutes from "./routes/mailer.router.js";
 
 // Connect to MongoDB
 connectDB();
@@ -17,7 +18,10 @@ connectDB();
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:5173',
+  credentials: true
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -34,6 +38,7 @@ app.use(
     cookie: {
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
       httpOnly: true,
+      secure:false,
     },
   })
 );
@@ -45,15 +50,28 @@ passport.use(new Strategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
+app.use((req,res,next)=>{
+  if(req.user){
+    console.log(req.user);
+  }
+  else{
+    console.log("user not found");
+  }
+  next();
+})
+
+app.use("/api", MailRoutes);
 // Mount user routes under /api
 app.use("/api", UserRoutes);
-
-
 //user routes
 app.use("/api",UserRoutes);
 // API Routes
 app.use("/api", apiRoutes);
 
+
+app.get("/user",(req,res)=>{
+  console.log(req.user.subscribed);
+});
 // Health check endpoint
 app.get("/health", (req, res) => {
   res.status(200).json({ status: "OK", message: "Server is running" });

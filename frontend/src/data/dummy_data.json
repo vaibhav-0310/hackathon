@@ -1,0 +1,93 @@
+
+[
+    {
+      "id": "gh_llama3_meta",
+      "platform": "GitHub",
+      "title": "LLaMA 3: New Open Source LLM from Meta AI",
+      "createdAt": "2024-04-18T10:00:00Z",
+      "summary": "Meta AI announces LLaMA 3, the next generation of their open-source large language model. Available in 8B and 70B parameter versions, demonstrating state-of-the-art performance.",
+      "tags": ["LLM", "Open Source", "Meta AI", "Foundation Model"],
+      "link": "https://github.com/meta-ai/llama3"
+    },
+    {
+      "id": "arxiv_efficient_finetune_vlm",
+      "platform": "ArXiv",
+      "title": "Efficient Fine-tuning of Vision-Language Models",
+      "createdAt": "2024-03-28T15:30:00Z",
+      "summary": "This paper introduces 'EFF-VLM', a novel parameter-efficient fine-tuning method specifically designed for large vision-language models, reducing computational costs significantly while maintaining high performance.",
+      "tags": ["Vision", "Language Model", "Fine-tuning", "Efficiency", "Parameter-Efficient"],
+      "link": "https://arxiv.org/abs/2403.18279"
+    },
+    {
+      "id": "hf_multimodal_gpt_x",
+      "platform": "Hugging Face",
+      "title": "MultiModal-GPT: A Versatile Model for Text, Images, and Audio",
+      "createdAt": "2024-03-25T09:15:00Z",
+      "summary": "Explore MultiModal-GPT, a new transformer architecture capable of processing and generating content across text, image, and audio domains seamlessly within a single framework.",
+      "tags": ["Multimodal", "GPT", "Audio", "Image Generation", "Transformer"],
+      "link": "https://huggingface.co/models/openai/gpt-4"
+    },
+    {
+      "id": "gh_stable_diffusion_3",
+      "platform": "GitHub",
+      "title": "Stable Diffusion 3 - Research Paper Implementation",
+      "createdAt": "2024-04-15T11:00:00Z",
+      "summary": "An open-source implementation of the techniques described in the Stable Diffusion 3 research paper, focusing on the new Diffusion Transformer (DiT) architecture for improved text-to-image generation.",
+      "tags": ["Image Generation", "Diffusion Model", "Open Source", "Stability AI", "DiT"],
+      "link": "https://github.com/Stability-AI/stablediffusion"
+    },
+    {
+      "id": "arxiv_agentic_ai_survey",
+      "platform": "ArXiv",
+      "title": "A Survey on Agentic AI Systems",
+      "createdAt": "2024-04-10T14:00:00Z",
+      "summary": "This survey provides a comprehensive overview of the current landscape of Agentic AI, covering autonomous agents, multi-agent systems, planning, reasoning, and tool usage capabilities.",
+      "tags": ["AI Agent", "Survey", "Autonomous Systems", "Multi-Agent", "LLM Agents"],
+      "link": "https://arxiv.org/abs/2404.07949"
+    },
+    {
+      "id": "hf_phi3_microsoft",
+      "platform": "Hugging Face",
+      "title": "Microsoft Phi-3 Mini Language Model",
+      "createdAt": "2024-04-23T08:00:00Z",
+      "summary": "Microsoft releases Phi-3 Mini, a surprisingly capable small language model (SLM) with 3.8B parameters, optimized for on-device inference and resource-constrained environments.",
+      "tags": ["SLM", "Microsoft", "Language Model", "Efficiency", "On-Device AI"],
+      "link": "https://huggingface.co/microsoft/Phi-3-mini-4k-instruct"
+    },
+    {
+      "id": "gh_open_webmath",
+      "platform": "GitHub",
+      "title": "OpenWebMath: An Open Dataset for Mathematical Reasoning",
+      "createdAt": "2024-04-05T16:20:00Z",
+      "summary": "Introducing OpenWebMath, a large-scale, diverse dataset curated from web sources to benchmark and improve the mathematical reasoning capabilities of large language models.",
+      "tags": ["Dataset", "Mathematics", "Reasoning", "LLM", "Benchmark"],
+      "link": "https://github.com/google-deepmind/openwebmath"
+    },
+    {
+      "id": "arxiv_sora_technical_report",
+      "platform": "ArXiv",
+      "title": "Sora: Video Generation Models as World Simulators (Technical Report)",
+      "createdAt": "2024-02-15T18:00:00Z",
+      "summary": "OpenAI's technical report detailing Sora, a text-to-video generation model capable of creating realistic and imaginative scenes up to a minute long, showcasing advancements in understanding motion and the physical world.",
+      "tags": ["Video Generation", "OpenAI", "World Model", "Diffusion", "Generative AI"],
+      "link": "https://openai.com/research/video-generation-models-as-world-simulators"
+    },
+    {
+      "id": "hf_distilwhisper",
+      "platform": "Hugging Face",
+      "title": "Distil-Whisper: Distilled Version of Whisper for Fast ASR",
+      "createdAt": "2023-10-01T12:00:00Z",
+      "summary": "Distil-Whisper is a distilled version of OpenAI's Whisper model that is 6 times faster, 49% smaller, and performs within 1% WER on out-of-distribution evaluation sets in English automatic speech recognition.",
+      "tags": ["ASR", "Speech Recognition", "Distillation", "Whisper", "Efficiency"],
+      "link": "https://huggingface.co/distil-whisper/distil-large-v2"
+    },
+    {
+      "id": "gh_monorepo_transformer_tools",
+      "platform": "GitHub",
+      "title": "TransformerDevTools: Debugging and Visualization for Transformers",
+      "createdAt": "2024-04-20T09:45:00Z",
+      "summary": "A collection of tools designed to help developers debug, visualize attention patterns, and understand the inner workings of Transformer models during training and inference.",
+      "tags": ["Transformer", "Debugging", "Visualization", "Developer Tools", "Attention Mechanism"],
+      "link": "https://github.com/user/transformer-dev-tools"
+    }
+  ]

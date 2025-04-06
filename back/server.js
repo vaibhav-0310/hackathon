@@ -46,7 +46,7 @@ passport.deserializeUser(User.deserializeUser());
 
 
 //user routes
-app.use(UserRoutes);
+app.use("/api",UserRoutes);
 // API Routes
 app.use("/api", apiRoutes);
 

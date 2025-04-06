@@ -22,15 +22,17 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+// Get MongoDB connection string from environment variable or use default
+const mongoUrl = process.env.MONGO_URI || "mongodb://127.0.0.1/ai";
+
 app.use(
   session({
-    store: MongoStore.create({ mongoUrl: "mongodb://127.0.0.1/ai" }),
-    secret: "random",
+    store: MongoStore.create({ mongoUrl }),
+    secret: process.env.SESSION_SECRET || "random",
     resave: false,
     saveUninitialized: false,
     cookie: {
-      expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
-      maxAge: 7 * 24 * 60 * 60 * 1000,
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
       httpOnly: true,
     },
   })
@@ -43,6 +45,8 @@ passport.use(new Strategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
+// Mount user routes under /api
+app.use("/api", UserRoutes);
 
 
 //user routes
@@ -68,8 +72,6 @@ app.use((err, req, res, next) => {
 app.use((req, res) => {
   res.status(404).json({ error: "Not Found", message: "The requested resource was not found" });
 });
-
-
 
 // Port configuration
 const PORT = process.env.PORT || 8080;

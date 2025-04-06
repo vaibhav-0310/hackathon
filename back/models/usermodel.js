@@ -1,8 +1,13 @@
 import mongoose from "mongoose";
 import passportLocalMongoose from "passport-local-mongoose";
 
-
 const UserSchema = new mongoose.Schema({
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+    trim: true,
+  },
   email: {
     type: String,
     required: true,
@@ -13,7 +18,6 @@ const UserSchema = new mongoose.Schema({
     type: String,
     default: "",
   },
-
   bio: {
     type: String,
     default: "",
@@ -30,12 +34,10 @@ const UserSchema = new mongoose.Schema({
       ref: "ModelData",
     }
   ],
-
   subscribed: {
     type: Boolean,
     default: false, 
   }
-
 }, 
 { timestamps: true });
 

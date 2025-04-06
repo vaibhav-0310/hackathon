@@ -9,6 +9,7 @@ const router=express.Router();
 // Signup route
 router.post('/signup', async (req, res) => {
     try {
+      console.log(req.body);
       const { username, email, profilePicture, bio, password } = req.body;
       const existingEmail = await User.findOne({ email });
       if (existingEmail) {

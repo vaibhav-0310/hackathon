@@ -1,14 +1,14 @@
 import { fetchHuggingFaceModels, fetchModelReadme } from "../services/huggingfaceService.js";
 import { generateModelSummary } from "../services/geminiService.js";
 import ModelData from "../models/modeldata.js";
-
+import mongoose from "mongoose";
 /**
  * Fetch models from Hugging Face, generate summaries with Gemini, and save to DB
  */
 export const fetchAndProcessModels = async (req, res) => {
   try {
+    await ModelData.deleteMany({});
     const limit = req.query.limit ? parseInt(req.query.limit) : 10;
-    
     // Step 1: Fetch models from Hugging Face
     const models = await fetchHuggingFaceModels(limit);
     

@@ -37,24 +37,27 @@ router.get("/models", async (req, res) => {
   }
 });
 
-// Search across all models
 router.get("/search", async (req, res) => {
   try {
     const { q } = req.query;
-    
+
     if (!q) {
       return res.status(400).json({ error: "Search query is required" });
     }
-    
+
     const ModelData = (await import("../models/modeldata.js")).default;
-    
-    const models = await ModelData.find(
-      { $text: { $search: q } },
-      { score: { $meta: "textScore" } }
-    )
-    .sort({ score: { $meta: "textScore" } })
-    .limit(20);
-    
+
+    // Case-insensitive regex search on 3 fields
+    const regex = new RegExp(q, "i");
+
+    const models = await ModelData.find({
+      $or: [
+        { common_title: regex },
+        { common_description: regex },
+        { common_summary: regex }
+      ]
+    }).limit(20);
+
     const formattedModels = models.map(model => ({
       id: model._id,
       platform: model.common_platform,
@@ -64,7 +67,7 @@ router.get("/search", async (req, res) => {
       tags: model.common_tags,
       link: model.common_link
     }));
-    
+
     return res.status(200).json(formattedModels);
   } catch (error) {
     console.error("Error searching models:", error);

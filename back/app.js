@@ -88,6 +88,35 @@ app.get("/arxiv", async (req, res) => {
   }
 });
 
+app.get("/github", async (req, res) => {
+  try {
+    const query = 'ai+model+transformer+in:name,description';
+    const url = `https://api.github.com/search/repositories?q=${query}&sort=updated&order=desc&per_page=5`;
+
+    const response = await axios.get(url);
+    const repos = response.data.items;
+
+    const aiModels = repos.map((repo) => ({
+      name: repo.name,
+      owner: repo.owner.login,
+      description: repo.description || "No description available",
+      stars: repo.stargazers_count,
+      url: repo.html_url,
+      updatedAt: repo.updated_at,
+      language: repo.language
+    }));
+
+    // Return just the array, not an object with a property
+    return res.status(200).json(aiModels);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: "Failed to fetch GitHub AI model data" });
+  }
+});
+
+
+
+
 
 app.listen(8080, () => {
   console.log("Server started at http://localhost:8080");

@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
-import bcrypt from "bcryptjs";
+import passportLocalMongoose from "passport-local-mongoose";
+
 
 const UserSchema = new mongoose.Schema({
   username: {
@@ -8,20 +9,6 @@ const UserSchema = new mongoose.Schema({
     unique: true,
     trim: true,
   },
-
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-    lowercase: true,
-  },
-
-  password: {
-    type: String,
-    required: true,
-    minlength: 6,
-  },
-
   profilePicture: {
     type: String,
     default: "",
@@ -31,20 +18,12 @@ const UserSchema = new mongoose.Schema({
     type: String,
     default: "",
   },
-
-  role: {
-    type: String,
-    enum: ["user", "admin"],
-    default: "user",
-  },
-
   likedModels: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: "ModelData",
     }
   ],
-
   savedModels: [
     {
       type: mongoose.Schema.Types.ObjectId,
@@ -54,22 +33,13 @@ const UserSchema = new mongoose.Schema({
 
   subscribed: {
     type: Boolean,
-    default: false, // user is unsubscribed by default
+    default: false, 
   }
 
-}, { timestamps: true });
+}, 
+{ timestamps: true });
 
-// Hash password before save
-UserSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) return next();
-  const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt);
-  next();
-});
+UserSchema.plugin(passportLocalMongoose);
+const User = mongoose.model("User", UserSchema);
 
-// Method to check password
-UserSchema.methods.matchPassword = async function (enteredPassword) {
-  return await bcrypt.compare(enteredPassword, this.password);
-};
-
-export default mongoose.model("User", UserSchema);
+export default User;

@@ -4,18 +4,63 @@ import {parseStringPromise} from "xml2js";
 import "dotenv/config";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import cors from "cors";
+import mongoose from "mongoose";
+import session from "express-session";
+import cookieParser from "cookie-parser";
+import MongoStore from "connect-mongo";
+import passport from "passport";
+import {Strategy} from "passport-local";
+import User from "./models/usermodel.js";
+import bodyParser from "body-parser";
+import UserRoutes from "./routes/user.routes.js";
 
 const app = express();
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+// Body parsing middleware - must come before routes
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+
+// MongoDB connection
+const connect = async () => {
+  await mongoose.connect("mongodb://127.0.0.1:27017/ai");
+};
+
+connect()
+  .then(() => console.log("Connected to MongoDB"))
+  .catch((e) => console.log("MongoDB connection error:", e));
+
+// Session configuration
+app.use(
+  session({
+    store: MongoStore.create({ mongoUrl: "mongodb://127.0.0.1/ai" }),
+    secret: "random",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      httpOnly: true,
+    },
+  })
+);
+
+// Passport configuration
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new Strategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
+// API Routes - always after middleware setup
+
+// Hugging Face API route
 app.get("/data", async (req, res) => {
   try {
     const hfResponse = await axios.get("https://huggingface.co/api/models?limit=10");
-
     if (!hfResponse || !hfResponse.data || hfResponse.data.length === 0) {
       return res.status(400).json({ message: "No model data found" });
     }
@@ -45,6 +90,7 @@ app.get("/data", async (req, res) => {
             description: generatedDescription,
           };
         } catch (err) {
+          console.log(err);
           return {
             modelId,
             link: `https://huggingface.co/${modelId}`,
@@ -61,7 +107,7 @@ app.get("/data", async (req, res) => {
   }
 });
 
-
+// arXiv API route
 app.get("/arxiv", async (req, res) => {
   try {
     const url =
@@ -88,6 +134,7 @@ app.get("/arxiv", async (req, res) => {
   }
 });
 
+// GitHub API route
 app.get("/github", async (req, res) => {
   try {
     const query = 'ai+model+transformer+in:name,description';
@@ -106,7 +153,6 @@ app.get("/github", async (req, res) => {
       language: repo.language
     }));
 
-    // Return just the array, not an object with a property
     return res.status(200).json(aiModels);
   } catch (err) {
     console.error(err);
@@ -114,10 +160,14 @@ app.get("/github", async (req, res) => {
   }
 });
 
+app.post("/test",(req,res)=>{
+  console.log(req.body);
+});
 
+// User routes - these should be imported from your routes file
+app.use(UserRoutes);
 
-
-
+// Start server
 app.listen(8080, () => {
   console.log("Server started at http://localhost:8080");
 });

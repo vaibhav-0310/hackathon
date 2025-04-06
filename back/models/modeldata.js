@@ -1,14 +1,13 @@
 import mongoose from "mongoose";
 
 const ModelDataSchema = new mongoose.Schema({
-  // 🔁 Common fields across all platforms
   common_title: String,
-  common_platform: String,     // e.g. "Hugging Face", "arXiv", "GitHub"
+  common_platform: String,    
   common_link: String,
   common_description: String,
   common_summary: String,
-  common_tags: [String],       // e.g. ["LLM", "NLP", "multimodal"]
-  common_type: String,         // e.g. "LLM", "CV", etc.
+  common_tags: [String],      
+  common_type: String,         
 
   // 🤗 Hugging Face specific
   hf_modelId: String,

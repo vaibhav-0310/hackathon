@@ -32,8 +32,6 @@ app.get("/data", async (req, res) => {
         try {
           const readmeResponse = await axios.get(readmeUrl);
           const readmeContent = readmeResponse.data;
-
-          // Send README content to Gemini
           const response = await model.generateContent({
             contents: [{ parts: [{ text: readmeContent }] }],
           });
@@ -80,7 +78,7 @@ app.get("/arxiv", async (req, res) => {
         ? paper.author.map((a) => a.name).join(", ")
         : paper.author.name,
       published: paper.published,
-      summary: paper.summary.trim().replace(/\s+/g, " ").slice(0, 300) + "...",
+      summary: paper.summary.trim().replace(/\s+/g, " ").slice(0, 8000) + "...",
       pdfLink: paper.link.find((l) => l.$.title === "pdf").$.href,
     }));
     return res.status(200).json(papers);

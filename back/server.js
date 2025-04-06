@@ -48,6 +48,9 @@ passport.deserializeUser(User.deserializeUser());
 // Mount user routes under /api
 app.use("/api", UserRoutes);
 
+
+//user routes
+app.use("/api",UserRoutes);
 // API Routes
 app.use("/api", apiRoutes);
 
